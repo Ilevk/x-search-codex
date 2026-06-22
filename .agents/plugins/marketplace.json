@@ -1,0 +1,20 @@
+{
+  "name": "x-search-codex",
+  "interface": {
+    "displayName": "X Search Codex"
+  },
+  "plugins": [
+    {
+      "name": "x-search-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/x-search-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
