@@ -26,7 +26,7 @@ DEFAULT_MODEL = "grok-4.20-reasoning"
 DEFAULT_TIMEOUT_SECONDS = 180
 DEFAULT_RETRIES = 2
 MAX_HANDLES = 10
-SERVER_NAME = "x-search-codex"
+SERVER_NAME = "x-search-plugin"
 SERVER_VERSION = "0.1.0"
 
 
@@ -175,7 +175,7 @@ def _post_json(url: str, bearer: str, payload: dict[str, Any]) -> dict[str, Any]
         headers={
             "Authorization": f"Bearer {bearer}",
             "Content-Type": "application/json",
-            "User-Agent": f"x-search-codex/{SERVER_VERSION}",
+            "User-Agent": f"x-search-plugin/{SERVER_VERSION}",
         },
     )
     try:
@@ -362,7 +362,7 @@ def get_trends(arguments: dict[str, Any]) -> dict[str, Any]:
 
 TOOLS: dict[str, dict[str, Any]] = {
     "x_search_status": {
-        "description": "Check x-search-codex configuration without making a network call.",
+        "description": "Check x-search-plugin configuration without making a network call.",
         "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
         "handler": lambda _args: x_search_status(),
     },
@@ -493,7 +493,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
             return _success(message_id, {"content": _text_content(result), "isError": False})
         except Exception as exc:
             data = {"error_type": type(exc).__name__}
-            if os.environ.get("X_SEARCH_CODEX_DEBUG") == "1":
+            if os.environ.get("X_SEARCH_PLUGIN_DEBUG") == "1" or os.environ.get("X_SEARCH_CODEX_DEBUG") == "1":
                 data["traceback"] = traceback.format_exc()
             return _success(
                 message_id,

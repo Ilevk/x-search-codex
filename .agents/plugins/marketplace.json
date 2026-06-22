@@ -1,14 +1,14 @@
 {
-  "name": "x-search-codex",
+  "name": "x-search-plugin",
   "interface": {
-    "displayName": "X Search Codex"
+    "displayName": "X Search Plugin"
   },
   "plugins": [
     {
-      "name": "x-search-codex",
+      "name": "x-search-plugin",
       "source": {
         "source": "local",
-        "path": "./plugins/x-search-codex"
+        "path": "./plugins/x-search-plugin"
       },
       "policy": {
         "installation": "AVAILABLE",

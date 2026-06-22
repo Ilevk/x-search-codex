@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Manage x-search-codex xAI OAuth credentials."""
+"""Manage x-search-plugin xAI OAuth credentials."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ def _print_status(payload: dict) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Manage x-search-codex xAI OAuth credentials.")
+    parser = argparse.ArgumentParser(description="Manage x-search-plugin xAI OAuth credentials.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     login = subparsers.add_parser("login", help="Run browser OAuth login against accounts.x.ai.")

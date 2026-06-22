@@ -1,9 +1,9 @@
-# X Search Codex
+# X Search Plugin
 
-Codex plugin for read-only X/Twitter research through xAI's Responses API
-`x_search` tool, without installing Hermes. It supports xAI OAuth login for
-SuperGrok / X Premium+ accounts and falls back to `XAI_API_KEY` when no usable
-stored OAuth credential is present.
+MCP plugin for read-only X/Twitter research through xAI's Responses API
+`x_search` tool, without installing Hermes. It is packaged first for Codex and
+Claude Code, supports xAI OAuth login for SuperGrok / X Premium+ accounts, and
+falls back to `XAI_API_KEY` when no usable stored OAuth credential is present.
 
 This is not a browser scraper. The plugin calls `https://api.x.ai/v1/responses`
 with xAI's server-side `x_search` tool and returns Grok's answer plus citations
@@ -21,14 +21,14 @@ Prerequisites:
 Clone the repository:
 
 ```bash
-git clone git@github.com:Ilevk/x-search-codex.git
-cd x-search-codex
+git clone git@github.com:Ilevk/x-search-plugin.git
+cd x-search-plugin
 ```
 
 Register the MCP server with Codex:
 
 ```bash
-codex mcp add x-search-codex -- uv run --quiet --locked python "$PWD/scripts/x_search_mcp.py"
+codex mcp add x-search-plugin -- uv run --quiet --locked python "$PWD/scripts/x_search_mcp.py"
 ```
 
 Authenticate with xAI OAuth:
@@ -63,24 +63,35 @@ Codex so it starts the updated server process.
 Option 1: direct MCP registration during local development:
 
 ```bash
-codex mcp add x-search-codex -- uv run --quiet --locked python "$PWD/scripts/x_search_mcp.py"
+codex mcp add x-search-plugin -- uv run --quiet --locked python "$PWD/scripts/x_search_mcp.py"
+```
+
+Claude Code can use the checked-in project `.mcp.json` directly. Open Claude
+Code from the repository root, approve the `x-search-plugin` server if prompted,
+then check `/mcp`. `CLAUDE.md` and `.claude/settings.json` provide Claude Code
+guidance and deny direct reads of local credential stores.
+
+Equivalent manual Claude Code registration:
+
+```bash
+claude mcp add --transport stdio --scope project x-search-plugin -- uv run --quiet --locked python "$PWD/scripts/x_search_mcp.py"
 ```
 
 Option 2: marketplace-style plugin install from this repository:
 
 ```bash
 codex plugin marketplace add "$PWD"
-codex plugin add x-search-codex@x-search-codex
+codex plugin add x-search-plugin@x-search-plugin
 ```
 
 For Git-based install, use the repository as a marketplace source:
 
 ```bash
-codex plugin marketplace add Ilevk/x-search-codex --ref main
-codex plugin add x-search-codex@x-search-codex
+codex plugin marketplace add Ilevk/x-search-plugin --ref main
+codex plugin add x-search-plugin@x-search-plugin
 ```
 
-The installable plugin payload lives under `plugins/x-search-codex/`. Keep it in
+The installable plugin payload lives under `plugins/x-search-plugin/`. Keep it in
 sync with the root development files when changing scripts, MCP config, skills,
 or plugin metadata.
 
@@ -107,9 +118,13 @@ uv run --quiet --locked python scripts/x_search_auth.py login
 ```
 
 The login opens `accounts.x.ai` / `auth.x.ai`, stores tokens at
-`~/.x-search-codex/auth.json`, and refreshes the access token before use.
+`~/.x-search-plugin/auth.json`, and refreshes the access token before use.
 The OAuth bearer is used against the same `https://api.x.ai/v1/responses`
 endpoint as API-key calls.
+
+If you authenticated before the project was renamed from `x-search-codex`, the
+runtime will continue to use the legacy `~/.x-search-codex/auth.json` store
+when the new `~/.x-search-plugin/auth.json` store does not exist.
 
 xAI still controls account entitlement. OAuth login can succeed while the API
 later returns `403` for a subscription tier or allowlist issue.
@@ -131,7 +146,7 @@ uv run --quiet --locked python scripts/x_search_auth.py logout
 
 Credential priority:
 
-1. Stored xAI OAuth credentials in `~/.x-search-codex/auth.json`
+1. Stored xAI OAuth credentials in `~/.x-search-plugin/auth.json`
 2. `XAI_OAUTH_BEARER_TOKEN`
 3. `XAI_BEARER_TOKEN`
 4. `XAI_API_KEY`
@@ -204,8 +219,11 @@ Search a date range:
 - `X_SEARCH_MODEL` defaults to `grok-4.20-reasoning`
 - `X_SEARCH_TIMEOUT_SECONDS` defaults to `180`
 - `X_SEARCH_RETRIES` defaults to `2`
-- `X_SEARCH_CODEX_HOME` overrides the auth store directory
+- `X_SEARCH_PLUGIN_HOME` overrides the auth store directory
+- `X_SEARCH_CODEX_HOME` is still honored as a legacy auth-store override
 - `X_SEARCH_XAI_OAUTH_CLIENT_ID` overrides the public xAI OAuth client id
+- `X_SEARCH_PLUGIN_DEBUG=1` includes tracebacks in MCP tool errors; the legacy
+  `X_SEARCH_CODEX_DEBUG=1` alias is still honored
 
 ## Troubleshooting
 
@@ -267,7 +285,9 @@ verify with another source.
 ## Security Notes
 
 - Do not paste OAuth codes, access tokens, refresh tokens, or API keys into chat.
-- OAuth state is stored at `~/.x-search-codex/auth.json` by default.
+- OAuth state is stored at `~/.x-search-plugin/auth.json` by default.
+- Existing `~/.x-search-codex/auth.json` credentials remain usable as a legacy
+  fallback after the rename.
 - Use `uv run --quiet --locked python scripts/x_search_auth.py logout` to remove stored OAuth state.
 - Do not set `XAI_BASE_URL` to an untrusted endpoint while using real OAuth or
   API-key credentials.
@@ -286,11 +306,11 @@ uv run --quiet --locked python scripts/smoke_mcp.py
 Syntax check:
 
 ```bash
-env PYTHONPYCACHEPREFIX=/tmp/x-search-codex-pycache \
+env PYTHONPYCACHEPREFIX=/tmp/x-search-plugin-pycache \
   uv run --quiet --locked python -m py_compile scripts/xai_oauth.py scripts/x_search_auth.py scripts/x_search_mcp.py scripts/smoke_mcp.py
 ```
 
-The smoke test isolates credentials with a temporary `X_SEARCH_CODEX_HOME` and
+The smoke test isolates credentials with a temporary `X_SEARCH_PLUGIN_HOME` and
 verifies that the server reports a clear missing-credential error.
 
 ## License

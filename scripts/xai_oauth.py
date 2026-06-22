@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""xAI OAuth helpers for x-search-codex.
+"""xAI OAuth helpers for x-search-plugin.
 
 This module implements the same credential shape used by Hermes' xAI OAuth
 provider: browser OAuth with PKCE against accounts.x.ai/auth.x.ai, persisted
@@ -52,13 +52,22 @@ class XAIAuthError(RuntimeError):
 def auth_home() -> Path:
     """Return the local credential directory.
 
-    `X_SEARCH_CODEX_HOME` exists so tests and power users can isolate auth
-    state. The default intentionally does not reuse `~/.hermes/auth.json`.
+    `X_SEARCH_PLUGIN_HOME` exists so tests and power users can isolate auth
+    state. `X_SEARCH_CODEX_HOME` and `~/.x-search-codex` are supported as a
+    legacy fallback for users who authenticated before the project rename. The
+    default intentionally does not reuse `~/.hermes/auth.json`.
     """
-    configured = os.environ.get("X_SEARCH_CODEX_HOME", "").strip()
+    configured = os.environ.get("X_SEARCH_PLUGIN_HOME", "").strip()
     if configured:
         return Path(configured).expanduser()
-    return Path.home() / ".x-search-codex"
+    legacy_configured = os.environ.get("X_SEARCH_CODEX_HOME", "").strip()
+    if legacy_configured:
+        return Path(legacy_configured).expanduser()
+    default_home = Path.home() / ".x-search-plugin"
+    legacy_home = Path.home() / ".x-search-codex"
+    if not default_home.exists() and legacy_home.exists():
+        return legacy_home
+    return default_home
 
 
 def auth_path() -> Path:
@@ -223,7 +232,7 @@ def _authorization_url(
         "state": state,
         "nonce": nonce,
         "plan": "generic",
-        "referrer": "x-search-codex",
+        "referrer": "x-search-plugin",
     }
     return f"{authorization_endpoint}?{urllib.parse.urlencode(params)}"
 
@@ -389,7 +398,7 @@ def login(
         state=state,
         nonce=nonce,
     )
-    print("Open this URL to authorize x-search-codex with xAI:")
+    print("Open this URL to authorize x-search-plugin with xAI:")
     print(authorization_url)
     print()
     if manual_paste:

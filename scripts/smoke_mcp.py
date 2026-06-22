@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline smoke test for the x-search-codex MCP server."""
+"""Offline smoke test for the x-search-plugin MCP server."""
 
 from __future__ import annotations
 
@@ -45,8 +45,8 @@ def main() -> int:
     env = os.environ.copy()
     for name in ("XAI_OAUTH_BEARER_TOKEN", "XAI_BEARER_TOKEN", "XAI_API_KEY"):
         env.pop(name, None)
-    with tempfile.TemporaryDirectory(prefix="x-search-codex-smoke-") as auth_home:
-        env["X_SEARCH_CODEX_HOME"] = auth_home
+    with tempfile.TemporaryDirectory(prefix="x-search-plugin-smoke-") as auth_home:
+        env["X_SEARCH_PLUGIN_HOME"] = auth_home
         result = subprocess.run(
             [sys.executable, str(SERVER)],
             input=payload,

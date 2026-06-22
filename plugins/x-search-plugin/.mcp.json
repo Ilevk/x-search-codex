@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "x-search-codex": {
+    "x-search-plugin": {
       "command": "uv",
       "args": [
         "run",

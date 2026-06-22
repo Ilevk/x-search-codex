@@ -1,7 +1,7 @@
 [project]
-name = "x-search-codex"
+name = "x-search-plugin"
 version = "0.1.0"
-description = "Codex plugin for read-only X/Twitter research through xAI x_search."
+description = "MCP plugin for read-only X/Twitter research through xAI x_search."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"

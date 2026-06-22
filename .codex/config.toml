@@ -1,3 +1,3 @@
-[mcp_servers.x-search-codex]
-command = "python3"
-args = ["./scripts/x_search_mcp.py"]
+[mcp_servers.x-search-plugin]
+command = "uv"
+args = ["run", "--quiet", "--locked", "python", "./scripts/x_search_mcp.py"]
