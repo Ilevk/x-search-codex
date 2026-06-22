@@ -9,6 +9,29 @@ This is not a browser scraper. The plugin calls `https://api.x.ai/v1/responses`
 with xAI's server-side `x_search` tool and returns Grok's answer plus citations
 when xAI provides them.
 
+## Copy-Paste Agent Prompt
+
+Paste this into Codex or Claude Code to have the agent set up and verify the
+plugin for you:
+
+```text
+Set up x-search-plugin from https://github.com/Ilevk/x-search-plugin for this machine.
+
+Use uv. Prefer xAI OAuth, but if I already have XAI_API_KEY configured, use that as the fallback. Do not ask me to paste access tokens, refresh tokens, API keys, browser cookies, or credential file contents into chat.
+
+Steps:
+1. Clone or update the repository.
+2. Register the x-search-plugin MCP server for the current agent client.
+   - Codex: use codex mcp add or the Codex plugin marketplace flow.
+   - Claude Code: use the repository .mcp.json, or claude mcp add --transport stdio --scope project if needed.
+3. Run uv run --quiet --locked python scripts/x_search_auth.py status.
+4. If no credential is configured, ask me to run uv run --quiet --locked python scripts/x_search_auth.py login locally.
+5. Run uv run --quiet --locked python scripts/smoke_mcp.py.
+6. Confirm the MCP tools are available, then try a read-only X search for recent posts from @Lo_gan__.
+
+Keep this read-only. Do not post, like, follow, DM, or mutate any X account state.
+```
+
 ## Quickstart for Codex
 
 Prerequisites:
@@ -148,29 +171,6 @@ or plugin metadata.
 The plugin is uv-first: `pyproject.toml` and `uv.lock` are included in both the
 root development checkout and the installable plugin payload. MCP startup uses
 `uv run --quiet --locked ...` so the runtime contract is explicit and lockfile-backed.
-
-## Copy-Paste Agent Prompt
-
-Paste this into Codex or Claude Code to have the agent set up and verify the
-plugin for you:
-
-```text
-Set up x-search-plugin from https://github.com/Ilevk/x-search-plugin for this machine.
-
-Use uv. Prefer xAI OAuth, but if I already have XAI_API_KEY configured, use that as the fallback. Do not ask me to paste access tokens, refresh tokens, API keys, browser cookies, or credential file contents into chat.
-
-Steps:
-1. Clone or update the repository.
-2. Register the x-search-plugin MCP server for the current agent client.
-   - Codex: use codex mcp add or the Codex plugin marketplace flow.
-   - Claude Code: use the repository .mcp.json, or claude mcp add --transport stdio --scope project if needed.
-3. Run uv run --quiet --locked python scripts/x_search_auth.py status.
-4. If no credential is configured, ask me to run uv run --quiet --locked python scripts/x_search_auth.py login locally.
-5. Run uv run --quiet --locked python scripts/smoke_mcp.py.
-6. Confirm the MCP tools are available, then try a read-only X search for recent posts from @Lo_gan__.
-
-Keep this read-only. Do not post, like, follow, DM, or mutate any X account state.
-```
 
 ## What It Provides
 
